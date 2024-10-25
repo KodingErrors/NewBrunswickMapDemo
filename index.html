@@ -52,6 +52,17 @@
       left: calc(50% - 5px); /* Center arrow */
       z-index: -1; /* Send the arrow behind the popover */
     }
+
+    svg path {
+      stroke: black;
+      stroke-width: 1px;
+      transition: stroke-width 0.2s;
+    }
+    svg path:hover {
+        stroke-width: 3px; /* Outline becomes thicker on hover */
+    }
+
+
   </style>
 </head>
 <body>
