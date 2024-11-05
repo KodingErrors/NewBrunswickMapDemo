@@ -93,9 +93,11 @@ svg path {
 }
 svg path:hover {
   stroke-width: 3px; 
+  stroke: red;
+  
 }
 svg path.highlight {
-  stroke-width: 3px; 
+  stroke-width: 3px;
 }
 
 .map-column {

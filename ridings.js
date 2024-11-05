@@ -2,6 +2,7 @@
 
 let selectedDataRidingNum = null;
 let dataCache = null;
+const imageList = document.getElementById("riding-listing");
 const csvText = `
   PostalCode,PED,Shared
   E3N0A1,1,
@@ -56210,22 +56211,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
  dataCache = parseCSV(csvText);
 
-// Load and parse CSV data
-async function loadData() {
-  const response = await fetch(
-    "C:\\Users\\raahmed\\Desktop\\C# Training\\simple-website\\postcodes.csv"
-  ); // Replace with actual CSV path
-  const csvText = await response.text();
-  return parseCSV(csvText);
-}
-
-// Cache data in memory
-async function cacheData() {
-  if (!dataCache) {
-    dataCache = await loadData();
-  }
-}
-
 // Parse CSV text into an array of objects
 function parseCSV(text) {
     const rows = text.trim().split("\n");
@@ -56257,7 +56242,11 @@ async function searchPostalCode() {
 
   if (pedValue !== null) {
     resultDisplay.textContent = `PED for ${postalCode}: ${pedValue}`;
+    
+    scrollImageIntoView(pedValue);
     searchDataRiding(pedValue);
+    applyHighlightImg(pedValue);
+
   } else {
     resultDisplay.textContent = `Postal code ${postalCode} not found.`;
   }
@@ -56299,59 +56288,18 @@ function initHandleAddImages() {
 //Adds images to right column and highlights relevant region                - requires code to remove old highlighted image and apply it to new
 // Event handler for region - riding scrollingIntoView and consequently applies
 function initHandleScroll() {
-  const rightColumn = document.getElementById("riding-listing"); // Right column container with images
 
   const svgPaths = document.querySelectorAll("#mapContainer svg path");
-  let selectedDataRidingNum = null;
+  selectedDataRidingNum = null;
 
   svgPaths.forEach((path) => {
     path.addEventListener("click", function () {
-      const dataId = path.getAttribute("data-riding");
-      const imageName = `${dataId}.jpg`;
+      const pedValue = path.getAttribute("data-riding");
+      scrollImageIntoView(pedValue);
 
-      // Find the image element with the matching src
-      const targetImage = Array.from(rightColumn.querySelectorAll("img")).find(
-        (img) => img.src.includes(imageName)
-      );
-
-      if (targetImage) {
-        // Scroll to the matched image in the right column
-        targetImage.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-
-        // Remove highlight from the previously highlighted image
-        if (selectedDataRidingNum) {
-          selectedDataRidingNum.classList.remove("highlightImg");
-        }
-
-        // Add highlight to the new target image
-        targetImage.classList.add("highlightImg");
-
-        // Update the currently highlighted image
-        selectedDataRidingNum = targetImage;
-      } else {
-        console.log(`Image ${imageName} not found.`);
-      }
     });
   });
 }
-
-// Function to programmatically click on a specific path by PED value
-function triggerClickByPED(pedValue) {
-  removeHighlight();
-  const pathToClick = document.querySelector(`path[data-riding="${pedValue}"]`);
-  if (pathToClick) {
-    pathToClick.click(); // This will trigger the click event handler
-  } else {
-    console.log(`No path found with PED "${pedValue}".`);
-  }
-}
-
-// Setup event listeners on paths
-
-
 
 
 //Helper methods
@@ -56363,19 +56311,68 @@ function removeHighlight() {
   });
 }
 
-//Removes imageHighlight (problematic?)
-function removeHighlightImg(PED) {
-  if (selectedDataRidingNum) {
-    selectedDataRidingNum.classList.remove("highlightImg");
+function removeImgHighlight() {
+  //search for me and replace 
+}
+
+
+
+function scrollImageIntoView(pedValue){
+
+  selectedDataRidingNum.classList.remove("highlightImg");
+
+  const imageName = `${pedValue}.jpg`;
+
+  // Find the image element with the matching src
+  const targetImage = Array.from(imageList.querySelectorAll("img")).find(
+    (img) => img.src.includes(imageName)
+  );
+  
+
+  if (targetImage) {
+    // Scroll to the matched image in the right column
+    targetImage.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    // Remove highlight from the previously highlighted image
+    removeHighlight();
+
+    // Add highlight to the new target image
+    targetImage.classList.add("highlightImg");
+
+    // Update the currently highlighted image
+    selectedDataRidingNum = targetImage;
+  } else {
+    console.log(`Image ${imageName} not found.`);
   }
 }
 
 // Dictionary search of data-riding to regionName and highlights corresponding riding
 function searchDataRiding(PED) {
   removeHighlight();
+  applyHighlightImg(PED);
   let matchedPath = document.querySelector(`path[data-riding="${PED}`);
   matchedPath.classList.add("highlight");
 
-  removeHighlightImg(PED);
+
 }
 
+function applyHighlightImg(PED) {
+  
+  if (selectedDataRidingNum) {
+    selectedDataRidingNum.classList.remove("highlightImg");
+  }
+
+  const imageName = `${PED}.jpg`;
+
+  // Find the image element with the matching src
+  selectedDataRidingNum = Array.from(imageList.querySelectorAll("img")).find(
+    (img) => img.src.includes(imageName)
+  );
+
+  selectedDataRidingNum.classList.add("highlightImg");
+
+
+}
