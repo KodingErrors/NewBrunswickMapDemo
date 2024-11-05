@@ -3,6 +3,8 @@
 let selectedDataRidingNum = null;
 let dataCache = null;
 const imageList = document.getElementById("riding-listing");
+const postalCodeInput = document.getElementById("postalCodeInput");
+const resultDisplay = document.getElementById("resultDisplay");
 const csvText = `
   PostalCode,PED,Shared
   E3N0A1,1,
@@ -56212,167 +56214,120 @@ document.addEventListener("DOMContentLoaded", () => {
  dataCache = parseCSV(csvText);
 
 // Parse CSV text into an array of objects
-function parseCSV(text) {
-    const rows = text.trim().split("\n");
-    const headers = rows[0].split(",");
-  
-    return rows.slice(1).map((row) => {
-      const values = row.split(",");
-      return headers.reduce((obj, header, index) => {
-        obj[header.trim()] = values[index].trim();
-        return obj;
-      }, {});
-    });
-  }
-  
-
 // Find the PED value associated with a specific postal code
 function findByPostalCode(postalCode) {
-  if (!dataCache) return null;
-  const result = dataCache.find((row) => row.PostalCode === postalCode);
-  return result ? result.PED : null;
+  return dataCache?.find((row) => row.PostalCode === postalCode)?.PED || null;
 }
 
 // Search function triggered by button click
 async function searchPostalCode() {
-  const postalCode = document.getElementById("postalCodeInput").value.trim();
-
+  const postalCode = postalCodeInput.value.trim();
   const pedValue = findByPostalCode(postalCode);
-  const resultDisplay = document.getElementById("resultDisplay");
 
   if (pedValue !== null) {
     resultDisplay.textContent = `PED for ${postalCode}: ${pedValue}`;
-    
-    scrollImageIntoView(pedValue);
-    searchDataRiding(pedValue);
-    applyHighlightImg(pedValue);
-
+    handleSearchResult(pedValue);
   } else {
     resultDisplay.textContent = `Postal code ${postalCode} not found.`;
   }
 }
 
-// Function to handle clicks on paths
-function initHandlePathClick() {
-  const paths = document.querySelectorAll("path");
+// Handle search result: scroll to image, highlight region
+function handleSearchResult(pedValue) {
+  scrollImageIntoView(pedValue);
+  searchDataRiding(pedValue);
+}
 
-  paths.forEach((path) => {
+// Initialize path click handlers
+function initHandlePathClick() {
+  document.querySelectorAll("path").forEach((path) => {
     path.addEventListener("click", () => {
       const pedValue = path.getAttribute("data-riding");
       console.log(`Path with PED "${pedValue}" clicked!`);
-      searchDataRiding(pedValue);
+      handleSearchResult(pedValue);
     });
   });
 }
 
+// Parse CSV data to an array of objects
+function parseCSV(text) {
+  const rows = text.trim().split("\n");
+  const headers = rows[0].split(",");
+  
+  return rows.slice(1).map((row) => {
+    const values = row.split(",");
+    return headers.reduce((obj, header, index) => {
+      obj[header.trim()] = values[index].trim();
+      return obj;
+    }, {});
+  });
+}
+
+// Initialize and add images with click handlers
 function initHandleAddImages() {
-  const imageList = document.getElementById("riding-listing");
   const numberOfImages = 49;
 
   for (let i = 1; i <= numberOfImages; i++) {
     const img = document.createElement("img");
-    img.src = `${i}.jpg`; // Assuming images are named sequentially like 2.jpg, 3.jpg, etc.
+    img.src = `${i}.jpg`;
     img.alt = `Image ${i}`;
 
-    // Add click event listener
-    img.addEventListener("click", function () {
-      // Extract the number from the src attribute
-      const imageNumber = this.src.match(/(\d+)\.jpg$/)[1];
-      searchDataRiding(imageNumber);
+    img.addEventListener("click", () => {
+      const imageNumber = img.src.match(/(\d+)\.jpg$/)[1];
+      handleSearchResult(imageNumber);
     });
 
-    imageList.appendChild(img); // Append each image to the right column
+    imageList.appendChild(img);
   }
 }
 
-//Adds images to right column and highlights relevant region                - requires code to remove old highlighted image and apply it to new
-// Event handler for region - riding scrollingIntoView and consequently applies
+// Handle SVG path clicks for scrolling and highlighting images
 function initHandleScroll() {
-
-  const svgPaths = document.querySelectorAll("#mapContainer svg path");
-  selectedDataRidingNum = null;
-
-  svgPaths.forEach((path) => {
-    path.addEventListener("click", function () {
+  document.querySelectorAll("#mapContainer svg path").forEach((path) => {
+    path.addEventListener("click", () => {
       const pedValue = path.getAttribute("data-riding");
       scrollImageIntoView(pedValue);
-
     });
   });
 }
 
-
-//Helper methods
-
-//Removes regionHighlight
+// Helper: Remove all highlights from SVG paths
 function removeHighlight() {
-  document.querySelectorAll("svg path.highlight").forEach((x) => {
-    x.classList.remove("highlight");
+  document.querySelectorAll("svg path.highlight").forEach((path) => {
+    path.classList.remove("highlight");
   });
 }
 
+// Helper: Remove image highlight
 function removeImgHighlight() {
-  //search for me and replace 
+  selectedDataRidingNum?.classList.remove("highlightImg");
 }
 
-
-
-function scrollImageIntoView(pedValue){
-
-  selectedDataRidingNum.classList.remove("highlightImg");
+// Scroll image into view and highlight it
+function scrollImageIntoView(pedValue) {
+  removeImgHighlight();
 
   const imageName = `${pedValue}.jpg`;
-
-  // Find the image element with the matching src
   const targetImage = Array.from(imageList.querySelectorAll("img")).find(
     (img) => img.src.includes(imageName)
   );
-  
 
   if (targetImage) {
-    // Scroll to the matched image in the right column
-    targetImage.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-
-    // Remove highlight from the previously highlighted image
-    removeHighlight();
-
-    // Add highlight to the new target image
+    targetImage.scrollIntoView({ behavior: "smooth", block: "start" });
     targetImage.classList.add("highlightImg");
-
-    // Update the currently highlighted image
     selectedDataRidingNum = targetImage;
   } else {
     console.log(`Image ${imageName} not found.`);
   }
 }
 
-// Dictionary search of data-riding to regionName and highlights corresponding riding
-function searchDataRiding(PED) {
+// Highlight the path associated with a given PED
+function searchDataRiding(pedValue) {
   removeHighlight();
-  applyHighlightImg(PED);
-  let matchedPath = document.querySelector(`path[data-riding="${PED}`);
-  matchedPath.classList.add("highlight");
+  const matchedPath = document.querySelector(`path[data-riding="${pedValue}"]`);
 
-
-}
-
-function applyHighlightImg(PED) {
-  
-  if (selectedDataRidingNum) {
-    selectedDataRidingNum.classList.remove("highlightImg");
+  if (matchedPath) {
+    matchedPath.classList.add("highlight");
   }
-
-  const imageName = `${PED}.jpg`;
-
-  // Find the image element with the matching src
-  selectedDataRidingNum = Array.from(imageList.querySelectorAll("img")).find(
-    (img) => img.src.includes(imageName)
-  );
-
-  selectedDataRidingNum.classList.add("highlightImg");
-
-
 }
+
