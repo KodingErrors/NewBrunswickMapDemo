@@ -1,8 +1,11 @@
 "use strict";
 
+let zoomTimeout;  
+let isMouseDragging = false;
+let mouseStartX, mouseStartY, lastTranslateX, lastTranslateY;
 let selectedDataRidingNum = null;
 let dataCache = null;
-let scale = 1;          
+let scale = 1;          // Initial zoom level
 const scaleStep = 0.1;  
 const imageList = document.getElementById("riding-listing");
 const postalCodeInput = document.getElementById("postalCodeInput");
@@ -56123,7 +56126,6 @@ document.addEventListener("DOMContentLoaded", () => {
     49: "Madawaska Les Lacs-Edmundston - Edmundston-Saint-Joseph-de-Madawaska",
   };
 
-  // Select elements
   const paths = document.querySelectorAll("svg path");
   const svg = document.querySelector("svg");
   const popover = document.getElementById("popover");
@@ -56141,19 +56143,36 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastY = 0;
 
   initHandlePathClick();
+  initMouseControls();
   initHandleAddImages();
   initHandleScroll();
-  document.getElementById("zoomInBtn").addEventListener("click", zoomIn);
-  document.getElementById("zoomOutBtn").addEventListener("click", zoomOut);
-  document.getElementById("resetZoomBtn").addEventListener("click", resetScale);
+
+  // Reset timeout if interacted with
+  document.getElementById("zoomInBtn").addEventListener("click", () => {
+    zoomIn();
+    startZoomResetTimeout(); 
+  });
+
+  document.getElementById("zoomOutBtn").addEventListener("click", () => {
+    zoomOut();
+    startZoomResetTimeout(); 
+  });
+
+  document.getElementById("resetZoomBtn").addEventListener("click", () => {
+    resetScale();
+    startZoomResetTimeout(); 
+  });
+
+  document.addEventListener("mousemove", startZoomResetTimeout);
+  document.addEventListener("mousedown", startZoomResetTimeout);
 
   // Function to show the popover
   function showPopover(ridingNum, x, y) {
     if (regionMap[ridingNum]) {
       popoverText.textContent = `Riding: ${ridingNum} - Region: ${regionMap[ridingNum]}`;
-      popover.style.top = `${y + 10}px`; // Adjust for arrow
+      popover.style.top = `${y + 10}px`; 
       popover.style.left = `${x}px`;
-      popover.style.display = "block"; // Show popover
+      popover.style.display = "block"; 
     }
   }
 
@@ -56218,7 +56237,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
  dataCache = parseCSV(csvText);
 
-// Parse CSV text into an array of objects
 // Find the PED value associated with a specific postal code
 function findByPostalCode(postalCode) {
   return dataCache?.find((row) => row.PostalCode === postalCode)?.PED || null;
@@ -56297,25 +56315,30 @@ function initHandleScroll() {
   });
 }
 
+// Zoom in function (preserves the pan state)
 function zoomIn() {
   scale += scaleStep;
   updateScale();
 }
 
+// Zoom out function (preserves the pan state)
 function zoomOut() {
-  scale = Math.max(scale - scaleStep, 0.5); // Set a minimum scale limit (e.g., 0.5x)
+  scale = Math.max(scale - scaleStep, 0.5); 
   updateScale();
 }
 
 function resetScale() {
-  scale = 1;  // Reset scale to original size
-  updateScale();
+  scale = 1;  
+  lastTranslateX = 0;  
+  lastTranslateY = 0;  
+  updateScale();       
 }
 
+// Function to update the scale and apply it without losing the pan state
 function updateScale() {
-  mapContainer.style.transform = `scale(${scale})`;
-  mapContainer.style.transformOrigin = "center"; // Adjust origin as needed
+  mapContainer.style.transform = `translate(${lastTranslateX}px, ${lastTranslateY}px) scale(${scale})`;
 }
+
 
 // Scroll image into view and highlight it
 function scrollImageIntoView(pedValue) {
@@ -56349,3 +56372,60 @@ function searchDataRiding(pedValue) {
   }
 }
 
+function initMouseControls() {
+
+
+  // When the mouse button is pressed down on the mapContainer
+  mapContainer.addEventListener("mousedown", (e) => {
+    isMouseDragging = true;
+
+    // Capture the starting mouse position
+    mouseStartX = e.pageX;
+    mouseStartY = e.pageY;
+
+    // Capture the current translation (position) of the map
+    const transform = window.getComputedStyle(mapContainer).transform;
+    const matrix = new DOMMatrix(transform);
+    lastTranslateX = matrix.m41;
+    lastTranslateY = matrix.m42;
+
+    // Change the cursor to grabbing
+    mapContainer.style.cursor = "grabbing";
+
+    startZoomResetTimeout();
+  });
+
+  // When the mouse moves, and dragging is active, update the position
+  mapContainer.addEventListener("mousemove", (e) => {
+    if (!isMouseDragging) return;
+
+    // Calculate the distance moved by the mouse
+    const dx = e.pageX - mouseStartX;
+    const dy = e.pageY - mouseStartY;
+
+    // Apply the new translation based on mouse movement, while preserving the scale
+    mapContainer.style.transform = `translate(${lastTranslateX + dx}px, ${lastTranslateY + dy}px) scale(${scale})`;
+
+    startZoomResetTimeout();
+
+  });
+
+  // When the mouse button is released, stop the dragging
+  mapContainer.addEventListener("mouseup", () => {
+    isMouseDragging = false;
+    mapContainer.style.cursor = "default";
+  });
+
+  // stop dragging when the mouse leaves the mapContainer
+  mapContainer.addEventListener("mouseleave", () => {
+    if (isMouseDragging) {
+      isMouseDragging = false;
+      mapContainer.style.cursor = "default";
+    }
+  });
+}
+
+function startZoomResetTimeout() {
+  clearTimeout(zoomTimeout);
+  zoomTimeout = setTimeout(resetScale, 60000); 
+}
