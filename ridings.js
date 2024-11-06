@@ -2,6 +2,8 @@
 
 let selectedDataRidingNum = null;
 let dataCache = null;
+let scale = 1;          
+const scaleStep = 0.1;  
 const imageList = document.getElementById("riding-listing");
 const postalCodeInput = document.getElementById("postalCodeInput");
 const resultDisplay = document.getElementById("resultDisplay");
@@ -56141,6 +56143,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initHandlePathClick();
   initHandleAddImages();
   initHandleScroll();
+  document.getElementById("zoomInBtn").addEventListener("click", zoomIn);
+  document.getElementById("zoomOutBtn").addEventListener("click", zoomOut);
+  document.getElementById("resetZoomBtn").addEventListener("click", resetScale);
 
   // Function to show the popover
   function showPopover(ridingNum, x, y) {
@@ -56219,7 +56224,7 @@ function findByPostalCode(postalCode) {
   return dataCache?.find((row) => row.PostalCode === postalCode)?.PED || null;
 }
 
-// Search function triggered by button click
+// Search function triggered by searchButton click
 async function searchPostalCode() {
   const postalCode = postalCodeInput.value.trim();
   const pedValue = findByPostalCode(postalCode);
@@ -56236,6 +56241,7 @@ async function searchPostalCode() {
 function handleSearchResult(pedValue) {
   scrollImageIntoView(pedValue);
   searchDataRiding(pedValue);
+
 }
 
 // Initialize path click handlers
@@ -56291,21 +56297,29 @@ function initHandleScroll() {
   });
 }
 
-// Helper: Remove all highlights from SVG paths
-function removeHighlight() {
-  document.querySelectorAll("svg path.highlight").forEach((path) => {
-    path.classList.remove("highlight");
-  });
+function zoomIn() {
+  scale += scaleStep;
+  updateScale();
 }
 
-// Helper: Remove image highlight
-function removeImgHighlight() {
-  selectedDataRidingNum?.classList.remove("highlightImg");
+function zoomOut() {
+  scale = Math.max(scale - scaleStep, 0.5); // Set a minimum scale limit (e.g., 0.5x)
+  updateScale();
+}
+
+function resetScale() {
+  scale = 1;  // Reset scale to original size
+  updateScale();
+}
+
+function updateScale() {
+  mapContainer.style.transform = `scale(${scale})`;
+  mapContainer.style.transformOrigin = "center"; // Adjust origin as needed
 }
 
 // Scroll image into view and highlight it
 function scrollImageIntoView(pedValue) {
-  removeImgHighlight();
+  selectedDataRidingNum?.classList.remove("highlightImg");
 
   const imageName = `${pedValue}.jpg`;
   const targetImage = Array.from(imageList.querySelectorAll("img")).find(
@@ -56323,7 +56337,11 @@ function scrollImageIntoView(pedValue) {
 
 // Highlight the path associated with a given PED
 function searchDataRiding(pedValue) {
-  removeHighlight();
+  
+  document.querySelectorAll("svg path.highlight").forEach((path) => {
+    path.classList.remove("highlight");
+  });
+
   const matchedPath = document.querySelector(`path[data-riding="${pedValue}"]`);
 
   if (matchedPath) {
