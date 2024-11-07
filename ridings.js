@@ -56260,7 +56260,6 @@ async function searchPostalCode() {
 function handleSearchResult(pedValue) {
   scrollImageIntoView(pedValue);
   searchDataRiding(pedValue);
-  handlePathCentering(pedValue);
 }
 
 // Initialize path click handlers
@@ -56300,6 +56299,7 @@ function initHandleAddImages() {
     img.addEventListener("click", () => {
       const imageNumber = img.src.match(/(\d+)\.jpg$/)[1];
       handleSearchResult(imageNumber);
+      handlePathCentering(imageNumber);
     });
 
     imageList.appendChild(img);
@@ -56344,7 +56344,7 @@ function updateScale() {
 // Scroll image into view and highlight it
 function scrollImageIntoView(pedValue) {
   selectedDataRidingNum?.classList.remove("highlightImg");
-
+  
   const imageName = `${pedValue}.jpg`;
   const targetImage = Array.from(imageList.querySelectorAll("img")).find(
     (img) => img.src.includes(imageName)
@@ -56379,6 +56379,7 @@ function initMouseControls() {
   // When the mouse button is pressed down on the mapContainer
   mapContainer.addEventListener("mousedown", (e) => {
     isMouseDragging = true;
+    mapContainer.style.transition = 'none'; // Disable transition while dragging
 
     // Capture the starting mouse position
     mouseStartX = e.pageX;
@@ -56415,6 +56416,7 @@ function initMouseControls() {
   mapContainer.addEventListener("mouseup", () => {
     isMouseDragging = false;
     mapContainer.style.cursor = "default";
+    mapContainer.style.transition = 'transform 0.5s ease-in-out'; // Restore transition after dragging
   });
 
   // stop dragging when the mouse leaves the mapContainer
