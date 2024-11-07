@@ -56269,6 +56269,7 @@ function initHandlePathClick() {
       const pedValue = path.getAttribute("data-riding");
       console.log(`Path with PED "${pedValue}" clicked!`);
       handleSearchResult(pedValue);
+      handlePathCentering(pedValue);
     });
   });
 }
@@ -56299,6 +56300,7 @@ function initHandleAddImages() {
     img.addEventListener("click", () => {
       const imageNumber = img.src.match(/(\d+)\.jpg$/)[1];
       handleSearchResult(imageNumber);
+      handlePathCentering(imageNumber);
     });
 
     imageList.appendChild(img);
@@ -56428,4 +56430,35 @@ function initMouseControls() {
 function startZoomResetTimeout() {
   clearTimeout(zoomTimeout);
   zoomTimeout = setTimeout(resetScale, 60000); 
+}
+
+function centerPath(pathElement) {
+  if (!pathElement) return;
+
+  // Get the bounding box of the selected path
+  const bbox = pathElement.getBBox();
+  
+  // Calculate the center of the bounding box
+  const centerX = bbox.x + bbox.width / 2;
+  const centerY = bbox.y + bbox.height / 2;
+
+  // Get dimensions of the map container
+  const containerRect = mapContainer.getBoundingClientRect();
+  const containerCenterX = containerRect.width / 2;
+  const containerCenterY = containerRect.height / 2;
+
+  // Calculate the translation needed to center the path
+  lastTranslateX = containerCenterX - centerX * scale;
+  lastTranslateY = containerCenterY - centerY * scale;
+
+  // Update the transform with the new translation and scale
+  updateScale();
+}
+
+
+function handlePathCentering(pedValue) {
+  const pathElement = document.querySelector(`path[data-riding="${pedValue}"]`);
+  if (pathElement) {
+      centerPath(pathElement);
+  }
 }
