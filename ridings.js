@@ -1,5 +1,6 @@
 "use strict";
 
+let offset = 20;
 let zoomTimeout;  
 let isMouseDragging = false;
 let mouseStartX, mouseStartY, lastTranslateX, lastTranslateY;
@@ -56259,7 +56260,7 @@ async function searchPostalCode() {
 function handleSearchResult(pedValue) {
   scrollImageIntoView(pedValue);
   searchDataRiding(pedValue);
-
+  handlePathCentering(pedValue);
 }
 
 // Initialize path click handlers
@@ -56269,7 +56270,6 @@ function initHandlePathClick() {
       const pedValue = path.getAttribute("data-riding");
       console.log(`Path with PED "${pedValue}" clicked!`);
       handleSearchResult(pedValue);
-      handlePathCentering(pedValue);
     });
   });
 }
@@ -56300,7 +56300,6 @@ function initHandleAddImages() {
     img.addEventListener("click", () => {
       const imageNumber = img.src.match(/(\d+)\.jpg$/)[1];
       handleSearchResult(imageNumber);
-      handlePathCentering(imageNumber);
     });
 
     imageList.appendChild(img);
@@ -56447,7 +56446,7 @@ function centerPath(pathElement) {
   const containerCenterX = containerRect.width / 2;
   const containerCenterY = containerRect.height / 2;
 
-  // Calculate the translation needed to center the path
+  // Calculate the translation, adjusting for current scale
   lastTranslateX = containerCenterX - centerX * scale;
   lastTranslateY = containerCenterY - centerY * scale;
 
