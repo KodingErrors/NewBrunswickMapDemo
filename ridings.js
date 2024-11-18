@@ -56250,7 +56250,14 @@ async function searchPostalCode() {
 
   if (pedValue !== null) {
     resultDisplay.textContent = `PED for ${postalCode}: ${pedValue}`;
-    handleSearchResult(pedValue);
+
+    // Scroll the image into view and highlight it
+    if (scrollImageIntoView(pedValue)) {
+      // Call handleSearchResult if the image is found
+      handleSearchResult(pedValue);
+    } else {
+      resultDisplay.textContent = `PED found (${pedValue}), but no associated image.`;
+    }
   } else {
     resultDisplay.textContent = `Postal code ${postalCode} not found.`;
   }
@@ -56333,6 +56340,13 @@ function resetScale() {
   lastTranslateX = 0;  
   lastTranslateY = 0;  
   updateScale();       
+  scrollImageIntoView(1);
+
+  document.querySelectorAll("svg path.highlight").forEach((path) => {
+    path.classList.remove("highlight");
+  });
+
+  selectedDataRidingNum?.classList.remove("highlightImg");
 }
 
 // Function to update the scale and apply it without losing the pan state
@@ -56343,20 +56357,29 @@ function updateScale() {
 
 // Scroll image into view and highlight it
 function scrollImageIntoView(pedValue) {
-  selectedDataRidingNum?.classList.remove("highlightImg");
-  
+  // Remove highlight from the previously selected image
+  if (selectedDataRidingNum) {
+    selectedDataRidingNum.classList.remove("highlightImg");
+  }
+
+  // Construct the image name and find it in the image list
   const imageName = `${pedValue}.jpg`;
   const targetImage = Array.from(imageList.querySelectorAll("img")).find(
     (img) => img.src.includes(imageName)
   );
 
   if (targetImage) {
+    // Scroll the image into view
     targetImage.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Highlight the image
     targetImage.classList.add("highlightImg");
-    selectedDataRidingNum = targetImage;
-  } else {
-    console.log(`Image ${imageName} not found.`);
+    selectedDataRidingNum = targetImage; // Update the global reference
+    return true; // Indicate success
   }
+
+  console.log(`Image ${imageName} not found.`);
+  return false; // Indicate failure
 }
 
 // Highlight the path associated with a given PED

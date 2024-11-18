@@ -1,10 +1,20 @@
+#mapContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Enables scrollbars when content overflows */
+  position: relative;
+  background-color: #f9f9f9; /* Light gray for contrast */
+}
+
 body {
   font-family: Arial, sans-serif;
   width: 100vw;
   height: 100vh;
   overflow: hidden; /* Disable scroll on the entire page */
   margin: 0;
-  background-color: red;
+  background-color: #20232a; /* Dark background for reduced eye strain */
+  color: #ffffff; /* White text for contrast */
 }
 
 .page-container {
@@ -15,51 +25,40 @@ body {
   max-width: 1920px;
   max-height: 1080px;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: #ffffff; /* Light background for content */
   overflow: hidden; /* Prevents overflow of content */
-}
-
-/* Ensure SVG container takes the full height but doesn't overflow */
-#mapContainer {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow: auto; /* Enables scrollbars when content overflows */
-  position: relative;
 }
 
 #mapContainer svg {
   width: 100%;
   height: auto;
-  max-height: 100vh; /* SVG stays within the viewport height */
+  max-height: 100vh;
   object-fit: contain;
+  stroke: black;
+  stroke-width: 1px;
+  transition: stroke-width 0.2s, stroke 0.2s;
 }
 
-/* Adjust column for map and remove scroll overflow */
 .map-column {
   padding: 20px;
-  background-color: #f0f0f0;
+  background-color: #f4f4f4;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden; /* Prevents any scrolling */
 }
 
-
-
-
-
-
 .popover {
   position: absolute;
-  background-color: #fff;
-  color: #333;
-  border: 1px solid #ccc;
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #cccccc;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   padding: 10px;
   z-index: 1000;
   display: none; /* Hide by default */
+  font-size: 1rem; /* Accessible text size */
 }
 
 .popover-content {
@@ -68,7 +67,7 @@ body {
 
 .close-btn {
   cursor: pointer;
-  color: #ff0000;
+  color: #d32f2f; /* Accessible red */
   float: right;
   margin-left: 10px;
   font-weight: bold;
@@ -80,44 +79,32 @@ body {
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-bottom: 5px solid #fff; /* Change according to popover background */
-  top: -5px; /* Adjust arrow position */
-  left: calc(50% - 5px); /* Center arrow */
-  z-index: -1; /* Send the arrow behind the popover */
+  border-bottom: 5px solid #ffffff;
+  top: -5px;
+  left: calc(50% - 5px);
 }
 
 svg path {
-  stroke: black;
+  stroke: #333333;
   stroke-width: 1px;
-  transition: stroke-width 0.2s;
+  transition: stroke-width 0.2s, stroke 0.2s;
 }
-svg path:hover {
-  stroke-width: 3px; 
+
+#mapContainer svg:hover {
+  stroke-width: 3px;
   stroke: red;
-  
 }
-svg path.highlight {
+
+#mapContainer svg path.highlight {
   stroke-width: 3px;
   stroke: yellow;
 }
 
-.map-column {
-  flex: 1;
-  padding: 20px;
-  background-color: #f0f0f0;
-  overflow: hidden; /* Prevents any additional scrolling */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Zoom controls */
 #zoomControls {
-  position: absolute; /* Keep it fixed within the page-container */
-  background-color: green;
-  border-radius: 5px;
-  bottom: 20px; /* Adjusts the distance from the bottom */
-  left: 20px; /* Adjusts the distance from the left */
+  position: absolute;
+  background-color: #71BFA2; /* Vibrant blue */
+  bottom: 20px;
+  left: 20px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -128,47 +115,89 @@ svg path.highlight {
   width: 72px;
   height: 72px;
   outline: none;
-  border: 1px solid #fff;
-  margin-bottom: 2rem;
+  border: 1px solid #ffffff;
+  margin: 0.25rem;
   padding: 0;
   align-items: center;
   justify-content: center;
   display: flex;
+  background-color: #ffffff;
+  color: #1e88e5; /* Blue text */
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-#zoomControls button:last-child {
-  margin-bottom: 0;
+#zoomControls button:hover {
+  background-color: #d8f3dc; /* Darker blue on hover */
+  color: #ffffff;
 }
 
-/* Riding column with search box and scrollable image list */
+#zoomControls button svg {
+  width: 24px; /* Define explicit width for icons */
+  height: 24px;
+  fill: currentColor; /* Inherits button text color */
+  stroke: none; /* Override any stroke applied to map SVGs */
+  transition: none; /* Disable unwanted transitions */
+}
+
 .riding-column {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Takes up full viewport height */
-  overflow: hidden; /* Prevents entire column from scrolling */
+  height: 100vh;
+  overflow: hidden;
   position: relative;
 }
 
 #searchBox {
-  display: flex;
-  flex-direction: column;
+  color: black;
+  display: flex; /* Align items in a row */
+  align-items: center; /* Vertically center items */
+  justify-content: space-between; /* Add spacing between items */
   min-height: 140px;
   padding: 10px;
-  align-items: center;
-  background-color: #f0f0f0;
-  z-index: 1;
+  background-color: #d8f3dc; /* Soft green */
+  border-radius: 5px; /* Smooth corners */
+  gap: 10px; /* Add spacing between input and button */
+}
+
+#searchBox input[type="text"] {
+  flex: 1; /* Allow the input to expand and take up available space */
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #b6d6b8;
+  border-radius: 4px;
+  color: black; /* Set text color to black */
+  background-color: white; /* Ensure good contrast with black text */
+}
+
+#searchBox button {
+  padding: 10px 16px;
+  font-size: 1em;
+  background-color: #1d6d3c; /* Darker green for contrast */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#searchBox button:hover {
+  background-color: #155a2f; /* Even darker green on hover */
 }
 
 .riding-listing {
   flex: 1;
   padding: 20px;
-  background-color: #e0e0e0;
-  overflow-y: auto; /* Allows only vertical scrolling here */
+  background-color: #cce7d0; /* Muted green, complements #d8f3dc */
+  color: #1d4021; /* Dark green for text for good contrast */
+  overflow-y: auto; /* Allows only vertical scrolling */
   height: calc(100vh - 160px); /* Fills remaining space below #searchBox */
   box-sizing: border-box;
+  border: 1px solid #b6d6b8; /* Subtle border for separation */
 }
 
-/* Image styling */
+
 .riding-listing img {
   margin-bottom: 10px;
   border-radius: 5px;
@@ -179,8 +208,8 @@ svg path.highlight {
 }
 
 .highlightImg {
-  border: 3px solid #fbff03; 
-  border-radius: 5px; 
+  border: 3px solid #fbff03;
+  border-radius: 5px;
 }
 
 #keyboardContainer {
@@ -196,34 +225,42 @@ svg path.highlight {
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Individual key styling */
 .key {
   padding: 10px;
-  background-color: #e0e0e0;
-  border: 1px solid #ccc;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
   text-align: center;
   cursor: pointer;
   font-size: 1.2em;
   border-radius: 4px;
   user-select: none;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-/* Minimize button styling */
+.key:focus, .key:hover {
+  background-color: #1e88e5; /* Vibrant blue */
+  color: #ffffff;
+}
+
 #minimizeButton {
   position: fixed;
   bottom: 10px;
   right: 10px;
   padding: 8px 12px;
-  background-color: #ff5f5f;
+  background-color: #d32f2f;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9em;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s;
 }
 
-/* Hide the keyboard */
+#minimizeButton:hover {
+  background-color: #b71c1c;
+}
+
 .hidden {
   display: none;
 }
