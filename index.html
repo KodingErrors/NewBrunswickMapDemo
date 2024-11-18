@@ -308,12 +308,14 @@
       <div class="riding-column">
         <div id="searchBox">
           <h1>Search by Postal Code</h1>
-          <input
-            type="text"
-            id="postalCodeInput"
-            placeholder="Enter Postal Code"
-          />
-          <button onclick="searchPostalCode()">Search</button>
+          <div id="inputBox">
+            <input
+              type="text"
+              id="postalCodeInput"
+              placeholder="Enter Postal Code: E3BXXX"
+            />
+            <button onclick="searchPostalCode()">Search</button>
+          </div>
           <div id="resultDisplay"></div>
         </div>
 

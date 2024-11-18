@@ -56255,6 +56255,11 @@ async function searchPostalCode() {
     if (scrollImageIntoView(pedValue)) {
       // Call handleSearchResult if the image is found
       handleSearchResult(pedValue);
+
+      setTimeout(function(){
+        scrollImageIntoView(pedValue);
+      }, 2000)
+
     } else {
       resultDisplay.textContent = `PED found (${pedValue}), but no associated image.`;
     }
@@ -56341,6 +56346,10 @@ function resetScale() {
   lastTranslateY = 0;  
   updateScale();       
   scrollImageIntoView(1);
+  resultDisplay.textContent = "";
+  
+  const postalCodeInput = document.getElementById("postalCodeInput");
+  postalCodeInput.value = "";
 
   document.querySelectorAll("svg path.highlight").forEach((path) => {
     path.classList.remove("highlight");
