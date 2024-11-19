@@ -268,3 +268,37 @@ svg path {
 #mapContainer {
   transition: transform 0.5s ease-in-out;
 }
+
+#popover {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+#popover[style*="display: block"] {
+  opacity: 1;
+}
+
+
+@media (max-width: 768px) {
+  .page-container {
+    grid-template-columns: 1fr; /* Stack elements vertically */
+    height: auto; /* Allow height to adjust */
+  }
+
+  .map-column {
+    width: 100%; /* Full width on small screens */
+  }
+
+  .riding-column {
+    margin-top: 10px; /* Add spacing between columns */
+  }
+
+  #zoomControls {
+    display: none;
+  }
+
+  .popover {
+    font-size: 14px; /* Adjust font for smaller screens */
+    padding: 10px;
+  }
+}

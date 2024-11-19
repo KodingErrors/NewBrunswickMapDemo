@@ -56170,13 +56170,39 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to show the popover
   function showPopover(ridingNum, x, y) {
     if (regionMap[ridingNum]) {
+      // Update the popover text
       popoverText.textContent = `Riding: ${ridingNum} - Region: ${regionMap[ridingNum]}`;
-      popover.style.top = `${y + 10}px`; 
-      popover.style.left = `${x}px`;
-      popover.style.display = "block"; 
+  
+      // Temporarily make the popover visible to calculate dimensions
+      popover.style.display = "block";
+  
+      // Get popover dimensions
+      const popoverRect = popover.getBoundingClientRect();
+      const containerRect = mapContainer.getBoundingClientRect();
+  
+      // Default positioning
+      let popoverX = x + 10; // Slight offset for clarity
+      let popoverY = y + 10;
+  
+      // Adjust for right edge overflow
+      if (popoverX + popoverRect.width > containerRect.right) {
+        popoverX = x - popoverRect.width - 10; // Move to the left of the pointer
+      }
+  
+      // Adjust for bottom edge overflow
+      if (popoverY + popoverRect.height > containerRect.bottom) {
+        popoverY = y - popoverRect.height - 10; // Move above the pointer
+      }
+  
+      // Apply calculated positions
+      popover.style.top = `${popoverY}px`;
+      popover.style.left = `${popoverX}px`;
+    } else {
+      // Hide the popover if no region is found
+      popover.style.display = "none";
     }
   }
-
+  
   // adding popover to clicks
   paths.forEach((path) => {
     path.addEventListener("click", (event) => {
