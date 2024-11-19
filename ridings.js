@@ -56331,7 +56331,7 @@ function initHandleAddImages() {
 
   for (let i = 1; i <= numberOfImages; i++) {
     const img = document.createElement("img");
-    img.src = `${i}.jpg`;
+    img.src = `images/${i}.jpg`;
     img.alt = `Image ${i}`;
 
     img.addEventListener("click", () => {
