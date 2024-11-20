@@ -56072,60 +56072,113 @@ const csvText = `
   E7C2L8,49,
   E7E1G2,49,X
 `;
+const regionMap = {
+  1: "Restigouche West",
+  2: "Restigouche East",
+  3: "Belle-Baie-Belledune",
+  4: "Bathurst - West Bathurst",
+  5: "Hautes-Terres-Nepisiguit",
+  6: "Caraquet",
+  7: "Shippagan-Les-Îles",
+  8: "Tracadie",
+  9: "Miramichi Bay - Neguac - Miramichi-Newcastle",
+  10: "Miramichi East - Miramichi-Chatham",
+  11: "Miramichi West",
+  12: "Kent North - Richibucto-Rexton",
+  13: "Beausoleil-Grand-Bouctouche-Kent - Cocagne-Grand-Digue",
+  14: "Shediac Bay-Dieppe",
+  15: "Shediac-Cap-Acadie",
+  16: "Tantramar",
+  17: "Dieppe-Memramcook",
+  18: "Moncton East",
+  19: "Moncton Centre",
+  20: "Moncton South - Moncton",
+  21: "Moncton Northwest",
+  22: "Champdoré-Irishtown",
+  23: "Riverview",
+  24: "Albert-Riverview",
+  25: "Arcadia-Butternut Valley-Maple Hills",
+  26: "Sussex-Three Rivers - Sussex",
+  27: "Hampton-Fundy-St. Martins",
+  28: "Quispamsis",
+  29: "Rothesay",
+  30: "Saint John East - Lakewood Heights",
+  31: "Saint John Portland-Simonds",
+  32: "Saint John Harbour",
+  33: "Saint John West-Lancaster - Saint John West",
+  34: "Kings Centre",
+  35: "Fundy-The Isles-Saint John Lorneville - Grand Manan-Deer Island",
+  36: "Saint Croix - Saint Andrews",
+  37: "Oromocto-Sunbury - Oromocto",
+  38: "Fredericton-Grand Lake - Minto",
+  39: "Fredericton Lincoln",
+  40: "Fredericton South-Silverwood",
+  41: "Fredericton North",
+  42: "Fredericton-York - Fredericton",
+  43: "Hanwell-New Maryland - Hanwell",
+  44: "Carleton-York",
+  45: "Woodstock-Hartland - Woodstock",
+  46: "Carleton-Victoria",
+  47: "Grand Falls-Vallée-des-Rivières-Saint-Quentin - Grand Falls",
+  48: "Edmundston-Vallée-des-Rivières - Edmundston",
+  49: "Madawaska Les Lacs-Edmundston - Edmundston-Saint-Joseph-de-Madawaska",
+};
+
+const nameMap = {
+  1: "Sir Meows-a-Lot",
+  2: "Purrfect Storm",
+  3: "Captain Whiskers",
+  4: "Fuzz Aldrin",
+  5: "Cleocatra",
+  6: "Chairman Meow",
+  7: "Meowster",
+  8: "Lord Purrington",
+  9: "Sir Pounce-a-Lot",
+  10: "Whisker Biscuit",
+  11: "Puddy Tat",
+  12: "Sassy McFluff",
+  13: "Purrlock Holmes",
+  14: "Baron von Meow",
+  15: "Furry Potter",
+  16: "Catnip Everdeen",
+  17: "The Great Catsby",
+  18: "Purrfecto",
+  19: "Muffin McSnuggles",
+  20: "Catticus Finch",
+  21: "Fuzzbucket",
+  22: "Purrfectly Posh",
+  23: "Miss Whiskers",
+  24: "Paws",
+  25: "Lord Fluffington",
+  26: "Noodle Paws",
+  27: "Meowzart",
+  28: "Wiggly Whiskers",
+  29: "Fuzz Lightyear",
+  30: "Princess Purrs",
+  31: "Tailor Swift",
+  32: "Sir Hiss",
+  33: "Catniss Everpurr",
+  34: "Mewlius Caesar",
+  35: "Snickerdoodle",
+  36: "Mewton",
+  37: "Purrincess Leia",
+  38: "Fuzzy Wuzzy",
+  39: "Pawsitively Adorable",
+  40: "Tofu Paws",
+  41: "Sir Furrs-a-Lot",
+  42: "Biscuit McWhiskers",
+  43: "Countess Whiskers",
+  44: "Purrmanente",
+  45: "Tumblefur",
+  46: "Jellybean McSnuggles",
+  47: "Lady Meowington",
+  48: "Fuzzball the Brave",
+  49: "Clawsome McSnuggles"
+};
+
 
 document.addEventListener("DOMContentLoaded", () => {
   // Mapping of class numbers to region names
-  const regionMap = {
-    1: "Restigouche West",
-    2: "Restigouche East",
-    3: "Belle-Baie-Belledune",
-    4: "Bathurst - West Bathurst",
-    5: "Hautes-Terres-Nepisiguit",
-    6: "Caraquet",
-    7: "Shippagan-Les-Îles",
-    8: "Tracadie",
-    9: "Miramichi Bay - Neguac - Miramichi-Newcastle",
-    10: "Miramichi East - Miramichi-Chatham",
-    11: "Miramichi West",
-    12: "Kent North - Richibucto-Rexton",
-    13: "Beausoleil-Grand-Bouctouche-Kent - Cocagne-Grand-Digue",
-    14: "Shediac Bay-Dieppe",
-    15: "Shediac-Cap-Acadie",
-    16: "Tantramar",
-    17: "Dieppe-Memramcook",
-    18: "Moncton East",
-    19: "Moncton Centre",
-    20: "Moncton South - Moncton",
-    21: "Moncton Northwest",
-    22: "Champdoré-Irishtown",
-    23: "Riverview",
-    24: "Albert-Riverview",
-    25: "Arcadia-Butternut Valley-Maple Hills",
-    26: "Sussex-Three Rivers - Sussex",
-    27: "Hampton-Fundy-St. Martins",
-    28: "Quispamsis",
-    29: "Rothesay",
-    30: "Saint John East - Lakewood Heights",
-    31: "Saint John Portland-Simonds",
-    32: "Saint John Harbour",
-    33: "Saint John West-Lancaster - Saint John West",
-    34: "Kings Centre",
-    35: "Fundy-The Isles-Saint John Lorneville - Grand Manan-Deer Island",
-    36: "Saint Croix - Saint Andrews",
-    37: "Oromocto-Sunbury - Oromocto",
-    38: "Fredericton-Grand Lake - Minto",
-    39: "Fredericton Lincoln",
-    40: "Fredericton South-Silverwood",
-    41: "Fredericton North",
-    42: "Fredericton-York - Fredericton",
-    43: "Hanwell-New Maryland - Hanwell",
-    44: "Carleton-York",
-    45: "Woodstock-Hartland - Woodstock",
-    46: "Carleton-Victoria",
-    47: "Grand Falls-Vallée-des-Rivières-Saint-Quentin - Grand Falls",
-    48: "Edmundston-Vallée-des-Rivières - Edmundston",
-    49: "Madawaska Les Lacs-Edmundston - Edmundston-Saint-Joseph-de-Madawaska",
-  };
 
   const paths = document.querySelectorAll("svg path");
   const svg = document.querySelector("svg");
@@ -56281,11 +56334,7 @@ async function searchPostalCode() {
     if (scrollImageIntoView(pedValue)) {
       // Call handleSearchResult if the image is found
       handleSearchResult(pedValue);
-
-      setTimeout(function(){
-        scrollImageIntoView(pedValue);
-      }, 2000)
-
+      handlePathCentering(pedValue);
     } else {
       resultDisplay.textContent = `PED found (${pedValue}), but no associated image.`;
     }
@@ -56330,19 +56379,48 @@ function initHandleAddImages() {
   const numberOfImages = 49;
 
   for (let i = 1; i <= numberOfImages; i++) {
+    // Create container for avatar and text
+    const catCard = document.createElement("div");
+    catCard.className = "cat-card";
+
+    // Create avatar image
     const img = document.createElement("img");
     img.src = `images/${i}.jpg`;
     img.alt = `Image ${i}`;
 
-    img.addEventListener("click", () => {
+    // Add click event
+    catCard.addEventListener("click", () => {
       const imageNumber = img.src.match(/(\d+)\.jpg$/)[1];
       handleSearchResult(imageNumber);
       handlePathCentering(imageNumber);
     });
 
-    imageList.appendChild(img);
+    // Create text container
+    const infoContainer = document.createElement("div");
+    infoContainer.className = "cat-info";
+
+    const catName = document.createElement("div");
+    catName.className = "cat-name";
+    catName.textContent = nameMap[i];
+
+    const catLocation = document.createElement("div");
+    catLocation.className = "cat-location";
+    catLocation.textContent = regionMap[i] || "Unknown";
+
+    // Append name and location to info container
+    infoContainer.appendChild(catName);
+    infoContainer.appendChild(catLocation);
+
+    // Append avatar and info to card
+    catCard.appendChild(img);
+    catCard.appendChild(infoContainer);
+
+    // Append card to the image list
+    imageList.appendChild(catCard);
   }
 }
+
+
 
 // Handle SVG path clicks for scrolling and highlighting images
 function initHandleScroll() {
