@@ -6,12 +6,14 @@ let isMouseDragging = false;
 let mouseStartX, mouseStartY, lastTranslateX, lastTranslateY;
 let selectedDataRidingNum = null;
 let dataCache = null;
-let scale = 1;          // Initial zoom level
+let scale = 1;          
 const scaleStep = 0.1;  
 const imageList = document.getElementById("riding-listing");
 const postalCodeInput = document.getElementById("postalCodeInput");
 const resultDisplay = document.getElementById("resultDisplay");
-const csvText = `
+
+
+const postalCode = `
   PostalCode,PED,Shared
   E3N0A1,1,
   E3N0A2,1,
@@ -56315,7 +56317,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
- dataCache = parseCSV(csvText);
+ dataCache = parseCSV(postalCode);
 
 // Find the PED value associated with a specific postal code
 function findByPostalCode(postalCode) {

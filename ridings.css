@@ -155,7 +155,8 @@ svg path {
   align-items: center; /* Vertically center items */
   justify-content: space-between; /* Add spacing between items */
   min-height: 140px;
-  padding: 10px;
+  padding-right: 100px;
+  padding-left: 50px;
   background-color: #d8f3dc; /* Soft green */
   border-radius: 5px; /* Smooth corners */
   gap: 10px; /* Add spacing between input and button */
@@ -306,10 +307,12 @@ svg path {
 .cat-name {
   font-weight: bold;
   font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .cat-location {
   font-size: 12px;
+  font-weight: bold;
   color: #555;
 }
 
