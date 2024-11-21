@@ -316,3 +316,18 @@ svg path {
   color: #555;
 }
 
+
+#regionInfoBox {
+  position: absolute;
+  bottom: 100px; /* Adjust as needed to position above zoomControls */
+  left: 50%;
+  transform: translateX(-50%); /* Center align */
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  display: none; /* Initially hidden */
+  z-index: 1000; /* Ensure it appears on top */
+  text-align: center;
+}

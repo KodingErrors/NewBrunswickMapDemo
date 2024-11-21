@@ -5,7 +5,8 @@ let zoomTimeout;
 let isMouseDragging = false;
 let mouseStartX, mouseStartY, lastTranslateX, lastTranslateY;
 let selectedDataRidingNum = null;
-let dataCache = null;
+let isMultiTouch = false;
+let svgData = null;
 let scale = 1;          
 const scaleStep = 0.1;  
 const imageList = document.getElementById("riding-listing");
@@ -56177,6 +56178,8 @@ const nameMap = {
   48: "Fuzzball the Brave",
   49: "Clawsome McSnuggles"
 };
+window.addEventListener("contextmenu", e => e.preventDefault());
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -56194,7 +56197,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let scale = 1;
   let startX = 0;
   let startY = 0;
-  let isDragging = false;
+  let isMultiTouch = false;
   let lastX = 0;
   let lastY = 0;
 
@@ -56262,7 +56265,8 @@ document.addEventListener("DOMContentLoaded", () => {
   paths.forEach((path) => {
     path.addEventListener("click", (event) => {
       const ridingNum = event.target.getAttribute("data-riding");
-      showPopover(ridingNum, event.pageX, event.pageY);
+      showRegionInfo(ridingNum);
+      //popover instead?
     });
   });
 
@@ -56280,15 +56284,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Touch event for drag functionality
   mapContainer.addEventListener("touchstart", (event) => {
-    if (event.touches.length === 1) {
-      isDragging = true;
+    if (event.touches.length > 1) {
+      isMultiTouch = true;
       startX = event.touches[0].clientX;
       startY = event.touches[0].clientY;
     }
   });
 
   mapContainer.addEventListener("touchmove", (event) => {
-    if (isDragging && event.touches.length === 1) {
+    if (isMultiTouch && event.touches.length === 1) {
       const dx = event.touches[0].clientX - startX;
       const dy = event.touches[0].clientY - startY;
       lastX += dx;
@@ -56312,16 +56316,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  mapContainer.addEventListener("touchend", () => {
-    isDragging = false;
+  mapContainer.addEventListener("touchend", (e) => {
+    // Reset multi-touch state after touch ends
+    if (e.touches.length === 0) {
+      setTimeout(() => {
+        isMultiTouch = false; // Add a small delay to avoid race conditions
+      }, 50);
+    }
   });
 });
 
- dataCache = parseCSV(postalCode);
+ svgData = parseCSV(postalCode);
 
 // Find the PED value associated with a specific postal code
 function findByPostalCode(postalCode) {
-  return dataCache?.find((row) => row.PostalCode === postalCode)?.PED || null;
+  return svgData?.find((row) => row.PostalCode === postalCode)?.PED || null;
 }
 
 // Search function triggered by searchButton click
@@ -56358,6 +56367,7 @@ function initHandlePathClick() {
       const pedValue = path.getAttribute("data-riding");
       console.log(`Path with PED "${pedValue}" clicked!`);
       handleSearchResult(pedValue);
+      handlePathCentering(pedValue);
     });
   });
 }
@@ -56599,5 +56609,23 @@ function handlePathCentering(pedValue) {
   const pathElement = document.querySelector(`path[data-riding="${pedValue}"]`);
   if (pathElement) {
       centerPath(pathElement);
+  }
+}
+
+function showRegionInfo(ridingNum) {
+  const regionInfoBox = document.getElementById("regionInfoBox");
+
+  if (regionMap[ridingNum]) {
+    // Set the text for the region info box
+    regionInfoBox.textContent = `Riding: ${ridingNum} - Region: ${regionMap[ridingNum]}`;
+    
+    // Show the region info box
+    regionInfoBox.style.display = "block";
+
+    // Optionally, auto-hide the box after a few seconds
+    clearTimeout(regionInfoBox.hideTimeout); // Clear any previous hide timeout
+    regionInfoBox.hideTimeout = setTimeout(() => {
+      regionInfoBox.style.display = "none";
+    }, 3000); // Adjust time as needed
   }
 }
