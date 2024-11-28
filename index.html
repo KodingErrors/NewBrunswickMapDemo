@@ -7,6 +7,18 @@
     <link href="ridings.css" rel="stylesheet" />
   </head>
   <body>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Use right-click drag to span across the map and left-click to see more information.</p>
+      </div>
+
+    </div>
+
     <div class="page-container" id="page-container">
       <div class="popover" id="popover">
         <div class="popover-content">
@@ -313,14 +325,15 @@
             <input
               type="text"
               id="postalCodeInput"
-              placeholder="Enter Postal Code: E3BXXX"
+              placeholder="Enter Postal Code: EXXXXX"
             />
             <button onclick="searchPostalCode()">Search</button>
           </div>
-          <div id="resultDisplay"></div>
+<!--          <div id="resultDisplay"></div> -->
         </div>
       
         <div class="riding-listing" id="riding-listing">
+          <p id="scrollToTop">Scroll through to see all the ridings in New Brunswick!</p>
           <!-- Images will load here dynamically -->
         </div>
       </div>      

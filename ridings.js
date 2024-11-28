@@ -1,17 +1,71 @@
 "use strict";
 
 let offset = 20;
-let zoomTimeout;  
 let isMouseDragging = false;
 let mouseStartX, mouseStartY, lastTranslateX, lastTranslateY;
 let selectedDataRidingNum = null;
 let isMultiTouch = false;
 let svgData = null;
-let scale = 1;          
+let scale = 1;     
+let zoomTimeout;     
 const scaleStep = 0.1;  
 const imageList = document.getElementById("riding-listing");
 const postalCodeInput = document.getElementById("postalCodeInput");
-const resultDisplay = document.getElementById("resultDisplay");
+const scrollToTop = document.getElementById("scrollToTop");
+
+//const resultDisplay = document.getElementById("resultDisplay");
+/*const nameMap = {
+  1: "Sir Meows-a-Lot",
+  2: "Purrfect Storm",
+  3: "Captain Whiskers",
+  4: "Fuzz Aldrin",
+  5: "Cleocatra",
+  6: "Chairman Meow",
+  7: "Meowster",
+  8: "Lord Purrington",
+  9: "Sir Pounce-a-Lot",
+  10: "Whisker Biscuit",
+  11: "Puddy Tat",
+  12: "Sassy McFluff",
+  13: "Purrlock Holmes",
+  14: "Baron von Meow",
+  15: "Furry Potter",
+  16: "Catnip Everdeen",
+  17: "The Great Catsby",
+  18: "Purrfecto",
+  19: "Muffin McSnuggles",
+  20: "Catticus Finch",
+  21: "Fuzzbucket",
+  22: "Purrfectly Posh",
+  23: "Miss Whiskers",
+  24: "Paws",
+  25: "Lord Fluffington",
+  26: "Noodle Paws",
+  27: "Meowzart",
+  28: "Wiggly Whiskers",
+  29: "Fuzz Lightyear",
+  30: "Princess Purrs",
+  31: "Tailor Swift",
+  32: "Sir Hiss",
+  33: "Catniss Everpurr",
+  34: "Mewlius Caesar",
+  35: "Snickerdoodle",
+  36: "Mewton",
+  37: "Purrincess Leia",
+  38: "Fuzzy Wuzzy",
+  39: "Pawsitively Adorable",
+  40: "Tofu Paws",
+  41: "Sir Furrs-a-Lot",
+  42: "Biscuit McWhiskers",
+  43: "Countess Whiskers",
+  44: "Purrmanente",
+  45: "Tumblefur",
+  46: "Jellybean McSnuggles",
+  47: "Lady Meowington",
+  48: "Fuzzball the Brave",
+  49: "Clawsome McSnuggles"
+};
+*/
 
 
 const postalCode = `
@@ -56127,60 +56181,110 @@ const regionMap = {
   49: "Madawaska Les Lacs-Edmundston - Edmundston-Saint-Joseph-de-Madawaska",
 };
 
-const nameMap = {
-  1: "Sir Meows-a-Lot",
-  2: "Purrfect Storm",
-  3: "Captain Whiskers",
-  4: "Fuzz Aldrin",
-  5: "Cleocatra",
-  6: "Chairman Meow",
-  7: "Meowster",
-  8: "Lord Purrington",
-  9: "Sir Pounce-a-Lot",
-  10: "Whisker Biscuit",
-  11: "Puddy Tat",
-  12: "Sassy McFluff",
-  13: "Purrlock Holmes",
-  14: "Baron von Meow",
-  15: "Furry Potter",
-  16: "Catnip Everdeen",
-  17: "The Great Catsby",
-  18: "Purrfecto",
-  19: "Muffin McSnuggles",
-  20: "Catticus Finch",
-  21: "Fuzzbucket",
-  22: "Purrfectly Posh",
-  23: "Miss Whiskers",
-  24: "Paws",
-  25: "Lord Fluffington",
-  26: "Noodle Paws",
-  27: "Meowzart",
-  28: "Wiggly Whiskers",
-  29: "Fuzz Lightyear",
-  30: "Princess Purrs",
-  31: "Tailor Swift",
-  32: "Sir Hiss",
-  33: "Catniss Everpurr",
-  34: "Mewlius Caesar",
-  35: "Snickerdoodle",
-  36: "Mewton",
-  37: "Purrincess Leia",
-  38: "Fuzzy Wuzzy",
-  39: "Pawsitively Adorable",
-  40: "Tofu Paws",
-  41: "Sir Furrs-a-Lot",
-  42: "Biscuit McWhiskers",
-  43: "Countess Whiskers",
-  44: "Purrmanente",
-  45: "Tumblefur",
-  46: "Jellybean McSnuggles",
-  47: "Lady Meowington",
-  48: "Fuzzball the Brave",
-  49: "Clawsome McSnuggles"
+
+const partyMap = {
+  1: "Liberal Party",
+  2: "Liberal Party",
+  3: "Liberal Party",
+  4: "Liberal Party",
+  5: "Liberal Party",
+  6: "Liberal Party",
+  7: "Liberal Party",
+  8: "Liberal Party",
+  9: "Liberal Party",
+  10: "Progressive Conservative Party",
+  11: "Progressive Conservative Party",
+  12: "Liberal Party",
+  13: "Liberal Party",
+  14: "Liberal Party",
+  15: "Liberal Party",
+  16: "Green Party",
+  17: "Liberal Party",
+  18: "Liberal Party",
+  19: "Liberal Party",
+  20: "Liberal Party",
+  21: "Liberal Party",
+  22: "Liberal Party",
+  23: "Conservative Progressive Party",
+  24: "Conservative Progressive Party",
+  25: "Conservative Progressive Party",
+  26: "Conservative Progressive Party",
+  27: "Conservative Progressive Party",
+  28: "Liberal Party",
+  29: "Liberal Party",
+  30: "Progressive Conservative Party",
+  31: "Liberal Party",
+  32: "Liberal Party",
+  33: "Liberal Party",
+  34: "Progressive Conservative Party",
+  35: "Progressive Conservative Party",
+  36: "Progressive Conservative Party",
+  37: "Progressive Conservative Party",
+  38: "Progressive Conservative Party",
+  39: "Green Party",
+  40: "Liberal Party",
+  41: "Liberal Party",
+  42: "Progressive Conservative Party",
+  43: "Liberal Party",
+  44: "Progressive Conservative Party",
+  45: "Progressive Conservative Party",
+  46: "Progressive Conservative Party",
+  47: "Liberal Party",
+  48: "Liberal Party",
+  49: "Liberal Party"
 };
-window.addEventListener("contextmenu", e => e.preventDefault());
 
-
+const nameMap = {
+  1: "LePage, Gilles",
+  2: "Arseneault, Guy",
+  3: "LeBlanc, Marco",
+  4: "Legacy, René",
+  5: "Robichaud, Luc",
+  6: "Thériault, Isabelle",
+  7: "Mallet, Eric",
+  8: "Chiasson, Keith",
+  9: "Johnston, Sam",
+  10: "Conroy, Michelle",
+  11: "Dawson, Mike",
+  12: "Finnigan, Pat",
+  13: "Bourque, Benoît",
+  14: "Gauvin, Robert",
+  15: "LeBlanc, Jacques",
+  16: "Mitton, Megan",
+  17: "Vautour, Natacha",
+  18: "Doucet, Alexandre Cédric",
+  19: "McKee, K.C., Robert",
+  20: "Johnson, Claire",
+  21: "Sodhi, Tania",
+  22: "Boudreau, Lyne Chantal",
+  23: "Weir, Rob",
+  24: "Wilson, Sherry",
+  25: "Monahan, Don",
+  26: "Scott-Wallace, Tammy",
+  27: "Herron, John",
+  28: "Kennedy, Aaron",
+  29: "Townsend, Alyson",
+  30: "Savoie, Glen",
+  31: "Savoie, Glen",
+  32: "Dornan, John",
+  33: "Wilcott, Kate",
+  34: "Oliver, Bill",
+  35: "Lee, Ian",
+  36: "Bockus, Kathy",
+  37: "Wilson, Mary",
+  38: "Austin, Kris",
+  39: "Coon, David",
+  40: "Holt, Susan",
+  41: "Randall, Luke",
+  42: "Cullins, Ryan",
+  43: "Miles, Cindy",
+  44: "Ames, Richard",
+  45: "Hogan, Bill",
+  46: "Johnson, Margaret",
+  47: "Chiasson, Chuck",
+  48: "D'Amours, Jean-Claude",
+  49: "Landry, Francine"
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   // Mapping of class numbers to region names
@@ -56224,62 +56328,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("mousemove", startZoomResetTimeout);
   document.addEventListener("mousedown", startZoomResetTimeout);
-
-  // Function to show the popover
-  function showPopover(ridingNum, x, y) {
-    if (regionMap[ridingNum]) {
-      // Update the popover text
-      popoverText.textContent = `Riding: ${ridingNum} - Region: ${regionMap[ridingNum]}`;
+  document.addEventListener("touchend", startZoomResetTimeout);
+  window.addEventListener("contextmenu", e => e.preventDefault());
   
-      // Temporarily make the popover visible to calculate dimensions
-      popover.style.display = "block";
-  
-      // Get popover dimensions
-      const popoverRect = popover.getBoundingClientRect();
-      const containerRect = mapContainer.getBoundingClientRect();
-  
-      // Default positioning
-      let popoverX = x + 10; // Slight offset for clarity
-      let popoverY = y + 10;
-  
-      // Adjust for right edge overflow
-      if (popoverX + popoverRect.width > containerRect.right) {
-        popoverX = x - popoverRect.width - 10; // Move to the left of the pointer
-      }
-  
-      // Adjust for bottom edge overflow
-      if (popoverY + popoverRect.height > containerRect.bottom) {
-        popoverY = y - popoverRect.height - 10; // Move above the pointer
-      }
-  
-      // Apply calculated positions
-      popover.style.top = `${popoverY}px`;
-      popover.style.left = `${popoverX}px`;
-    } else {
-      // Hide the popover if no region is found
-      popover.style.display = "none";
-    }
-  }
-  
-  // adding popover to clicks
+  // adding regionInfo to clicks
   paths.forEach((path) => {
     path.addEventListener("click", (event) => {
       const ridingNum = event.target.getAttribute("data-riding");
-      showRegionInfo(ridingNum);
-      //popover instead?
+      showRegionInfo(ridingNum); //popover instead?
     });
-  });
-
-  closeBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    popover.style.display = "none";
-  });
-
-  // Close popover on clicking outside or another path
-  document.addEventListener("click", (event) => {
-    if (!popover.contains(event.target) && !event.target.closest("svg")) {
-      popover.style.display = "none";
-    }
   });
 
   // Touch event for drag functionality
@@ -56292,7 +56349,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   mapContainer.addEventListener("touchmove", (event) => {
-    if (isMultiTouch && event.touches.length === 1) {
+    if (isMultiTouch && event.touches.length > 1) {
       const dx = event.touches[0].clientX - startX;
       const dy = event.touches[0].clientY - startY;
       lastX += dx;
@@ -56326,32 +56383,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
- svgData = parseCSV(postalCode);
+svgData = parseCSV(postalCode);
 
-// Find the PED value associated with a specific postal code
-function findByPostalCode(postalCode) {
-  return svgData?.find((row) => row.PostalCode === postalCode)?.PED || null;
-}
+
 
 // Search function triggered by searchButton click
 async function searchPostalCode() {
   const postalCode = postalCodeInput.value.trim();
   const pedValue = findByPostalCode(postalCode);
 
-  if (pedValue !== null) {
-    resultDisplay.textContent = `PED for ${postalCode}: ${pedValue}`;
+  if (pedValue !== null && scrollImageIntoView(pedValue)) {
+    handleSearchResult(pedValue);
+    handlePathCentering(pedValue);
+  } 
+}
 
-    // Scroll the image into view and highlight it
-    if (scrollImageIntoView(pedValue)) {
-      // Call handleSearchResult if the image is found
-      handleSearchResult(pedValue);
-      handlePathCentering(pedValue);
-    } else {
-      resultDisplay.textContent = `PED found (${pedValue}), but no associated image.`;
-    }
-  } else {
-    resultDisplay.textContent = `Postal code ${postalCode} not found.`;
-  }
+function findByPostalCode(postalCode) {
+  return svgData?.find((row) => row.PostalCode === postalCode)?.PED || null;
 }
 
 // Handle search result: scroll to image, highlight region
@@ -56392,8 +56440,8 @@ function initHandleAddImages() {
 
   for (let i = 1; i <= numberOfImages; i++) {
     // Create container for avatar and text
-    const catCard = document.createElement("div");
-    catCard.className = "cat-card";
+    const ridingCard = document.createElement("div");
+    ridingCard.className = "cat-card";
 
     // Create avatar image
     const img = document.createElement("img");
@@ -56401,7 +56449,7 @@ function initHandleAddImages() {
     img.alt = `Image ${i}`;
 
     // Add click event
-    catCard.addEventListener("click", () => {
+    ridingCard.addEventListener("click", () => {
       const imageNumber = img.src.match(/(\d+)\.jpg$/)[1];
       handleSearchResult(imageNumber);
       handlePathCentering(imageNumber);
@@ -56411,24 +56459,38 @@ function initHandleAddImages() {
     const infoContainer = document.createElement("div");
     infoContainer.className = "cat-info";
 
-    const catName = document.createElement("div");
-    catName.className = "cat-name";
-    catName.textContent = nameMap[i];
+    const ridingName = document.createElement("div");
+    ridingName.className = "cat-name";
+    ridingName.textContent = nameMap[i];
 
-    const catLocation = document.createElement("div");
-    catLocation.className = "cat-location";
-    catLocation.textContent = regionMap[i] || "Unknown";
+    const ridingParty = document.createElement("div");
+    ridingParty.className = "ridingParty";
+    
+    const partyName = partyMap[i]
+    if(partyName.charAt(0) == "L"){
+      ridingParty.textContent = "🔴\t" + partyName;
+    } else if(partyName.charAt(0) == "P") {
+      ridingParty.textContent = "🔵\t" + partyName
+    }
+    else{
+      ridingParty.textContent = "🟢\t" + partyName;
+    }
+
+    const ridingLocation = document.createElement("div");
+    ridingLocation.className = "cat-location";
+    ridingLocation.textContent = "➢    " + regionMap[i] || "Unknown";
 
     // Append name and location to info container
-    infoContainer.appendChild(catName);
-    infoContainer.appendChild(catLocation);
+    infoContainer.appendChild(ridingName);
+    infoContainer.appendChild(ridingParty);
+    infoContainer.appendChild(ridingLocation);
 
     // Append avatar and info to card
-    catCard.appendChild(img);
-    catCard.appendChild(infoContainer);
+    ridingCard.appendChild(img);
+    ridingCard.appendChild(infoContainer);
 
     // Append card to the image list
-    imageList.appendChild(catCard);
+    imageList.appendChild(ridingCard);
   }
 }
 
@@ -56461,8 +56523,8 @@ function resetScale() {
   lastTranslateX = 0;  
   lastTranslateY = 0;  
   updateScale();       
-  scrollImageIntoView(1);
-  resultDisplay.textContent = "";
+  scrollToTop.scrollIntoView({ block: 'end',  behavior: 'smooth' });
+ // resultDisplay.textContent = "";
   
   const postalCodeInput = document.getElementById("postalCodeInput");
   postalCodeInput.value = "";
@@ -56482,29 +56544,25 @@ function updateScale() {
 
 // Scroll image into view and highlight it
 function scrollImageIntoView(pedValue) {
-  // Remove highlight from the previously selected image
   if (selectedDataRidingNum) {
     selectedDataRidingNum.classList.remove("highlightImg");
   }
 
-  // Construct the image name and find it in the image list
   const imageName = `${pedValue}.jpg`;
   const targetImage = Array.from(imageList.querySelectorAll("img")).find(
     (img) => img.src.includes(imageName)
   );
 
   if (targetImage) {
-    // Scroll the image into view
-    targetImage.scrollIntoView({ behavior: "smooth", block: "start" });
+    targetImage.scrollIntoView({ behavior: "smooth", block: "center" });
 
-    // Highlight the image
     targetImage.classList.add("highlightImg");
     selectedDataRidingNum = targetImage; // Update the global reference
-    return true; // Indicate success
+    return true; 
   }
 
   console.log(`Image ${imageName} not found.`);
-  return false; // Indicate failure
+  return false; 
 }
 
 // Highlight the path associated with a given PED
@@ -56515,7 +56573,6 @@ function searchDataRiding(pedValue) {
   });
 
   const matchedPath = document.querySelector(`path[data-riding="${pedValue}"]`);
-
   if (matchedPath) {
     matchedPath.classList.add("highlight");
   }
@@ -56578,7 +56635,7 @@ function initMouseControls() {
 
 function startZoomResetTimeout() {
   clearTimeout(zoomTimeout);
-  zoomTimeout = setTimeout(resetScale, 60000); 
+  zoomTimeout = setTimeout(resetScale, 30000); 
 }
 
 function centerPath(pathElement) {
@@ -56600,7 +56657,6 @@ function centerPath(pathElement) {
   lastTranslateX = containerCenterX - centerX * scale;
   lastTranslateY = containerCenterY - centerY * scale;
 
-  // Update the transform with the new translation and scale
   updateScale();
 }
 
@@ -56616,16 +56672,66 @@ function showRegionInfo(ridingNum) {
   const regionInfoBox = document.getElementById("regionInfoBox");
 
   if (regionMap[ridingNum]) {
-    // Set the text for the region info box
-    regionInfoBox.textContent = `Riding: ${ridingNum} - Region: ${regionMap[ridingNum]}`;
-    
-    // Show the region info box
+
+    regionInfoBox.textContent = `Riding: ${ridingNum} - Region: ${regionMap[ridingNum]}`;    
     regionInfoBox.style.display = "block";
 
-    // Optionally, auto-hide the box after a few seconds
-    clearTimeout(regionInfoBox.hideTimeout); // Clear any previous hide timeout
+    clearTimeout(regionInfoBox.hideTimeout); 
     regionInfoBox.hideTimeout = setTimeout(() => {
       regionInfoBox.style.display = "none";
-    }, 3000); // Adjust time as needed
+    }, 3000); //30 seconds
   }
 }
+
+//modal code
+var modal = document.getElementById("myModal");
+var span = document.getElementsByClassName("close")[0];
+modal.style.display = "block";
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+/*
+  // Function to show the popover
+  function showPopover(ridingNum, x, y) {
+    if (regionMap[ridingNum]) {
+      // Update the popover text
+      popoverText.textContent = `Riding: ${ridingNum} - Region: ${regionMap[ridingNum]}`;
+  
+      // Temporarily make the popover visible to calculate dimensions
+      popover.style.display = "block";
+  
+      // Get popover dimensions
+      const popoverRect = popover.getBoundingClientRect();
+      const containerRect = mapContainer.getBoundingClientRect();
+  
+      // Default positioning
+      let popoverX = x + 10; // Slight offset for clarity
+      let popoverY = y + 10;
+  
+      // Adjust for right edge overflow
+      if (popoverX + popoverRect.width > containerRect.right) {
+        popoverX = x - popoverRect.width - 10; // Move to the left of the pointer
+      }
+  
+      // Adjust for bottom edge overflow
+      if (popoverY + popoverRect.height > containerRect.bottom) {
+        popoverY = y - popoverRect.height - 10; // Move above the pointer
+      }
+  
+      // Apply calculated positions
+      popover.style.top = `${popoverY}px`;
+      popover.style.left = `${popoverX}px`;
+    } else {
+      // Hide the popover if no region is found
+      popover.style.display = "none";
+    }
+  }
+*/

@@ -13,8 +13,8 @@ body {
   height: 100vh;
   overflow: hidden; /* Disable scroll on the entire page */
   margin: 0;
-  background-color: #20232a; /* Dark background for reduced eye strain */
-  color: #ffffff; /* White text for contrast */
+  background-color: #20232a; 
+  color: #ffffff; 
 }
 
 .page-container {
@@ -25,7 +25,7 @@ body {
   max-width: 1920px;
   max-height: 1080px;
   margin: 0 auto;
-  background-color: #ffffff; /* Light background for content */
+  background-color: #ffffff; 
   overflow: hidden; /* Prevents overflow of content */
 }
 
@@ -58,7 +58,7 @@ body {
   padding: 10px;
   z-index: 1000;
   display: none; /* Hide by default */
-  font-size: 1rem; /* Accessible text size */
+  font-size: 1rem; 
 }
 
 .popover-content {
@@ -67,7 +67,7 @@ body {
 
 .close-btn {
   cursor: pointer;
-  color: #d32f2f; /* Accessible red */
+  color: #d32f2f; 
   float: right;
   margin-left: 10px;
   font-weight: bold;
@@ -102,7 +102,7 @@ svg path {
 
 #zoomControls {
   position: absolute;
-  background-color: #71BFA2; /* Vibrant blue */
+  background-color: #71BFA2; 
   bottom: 20px;
   left: 20px;
   z-index: 9999;
@@ -122,23 +122,23 @@ svg path {
   justify-content: center;
   display: flex;
   background-color: #ffffff;
-  color: #1e88e5; /* Blue text */
+  color: #1e88e5; 
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 #zoomControls button:hover {
-  background-color: #d8f3dc; /* Darker blue on hover */
+  background-color: #d8f3dc; 
   color: #ffffff;
 }
 
 #zoomControls button svg {
-  width: 24px; /* Define explicit width for icons */
+  width: 24px; 
   height: 24px;
-  fill: currentColor; /* Inherits button text color */
-  stroke: none; /* Override any stroke applied to map SVGs */
-  transition: none; /* Disable unwanted transitions */
+  fill: currentColor; 
+  stroke: none; 
+  transition: none; 
 }
 
 .riding-column {
@@ -151,31 +151,40 @@ svg path {
 
 #searchBox {
   color: black;
-  display: flex; /* Align items in a row */
-  align-items: center; /* Vertically center items */
-  justify-content: space-between; /* Add spacing between items */
+  display: flex; 
+  flex-direction: column; 
+  align-items: flex-start; 
+  justify-content: space-between; 
   min-height: 140px;
   padding-right: 100px;
   padding-left: 50px;
-  background-color: #d8f3dc; /* Soft green */
-  border-radius: 5px; /* Smooth corners */
-  gap: 10px; /* Add spacing between input and button */
+  padding-bottom: 75px;
+  background-color: #d8f3dc; 
+  border-radius: 5px; 
+  gap: 10px; 
+}
+
+#inputBox {
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  width: 100%; 
 }
 
 #searchBox input[type="text"] {
-  flex: 1; /* Allow the input to expand and take up available space */
+  flex: 1; 
   padding: 8px;
   font-size: 1em;
   border: 1px solid #b6d6b8;
   border-radius: 4px;
-  color: black; /* Set text color to black */
-  background-color: white; /* Ensure good contrast with black text */
+  color: black; 
+  background-color: white; 
 }
 
 #searchBox button {
   padding: 10px 16px;
   font-size: 1em;
-  background-color: #1d6d3c; /* Darker green for contrast */
+  background-color: #1d6d3c; 
   color: white;
   border: none;
   border-radius: 4px;
@@ -184,18 +193,18 @@ svg path {
 }
 
 #searchBox button:hover {
-  background-color: #155a2f; /* Even darker green on hover */
+  background-color: #155a2f; 
 }
 
 .riding-listing {
   flex: 1;
   padding: 20px;
-  background-color: #cce7d0; /* Muted green, complements #d8f3dc */
-  color: #1d4021; /* Dark green for text for good contrast */
-  overflow-y: auto; /* Allows only vertical scrolling */
-  height: calc(100vh - 160px); /* Fills remaining space below #searchBox */
+  background-color: #cce7d0; 
+  color: #1d4021; 
+  overflow-y: auto; 
+  height: calc(100vh - 160px); 
   box-sizing: border-box;
-  border: 1px solid #b6d6b8; /* Subtle border for separation */
+  border: 1px solid #b6d6b8; 
 }
 
 
@@ -211,55 +220,6 @@ svg path {
 .highlightImg {
   border: 3px solid #fbff03;
   border-radius: 5px;
-}
-
-#keyboardContainer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #f3f3f3;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 5px;
-  padding: 10px;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.key {
-  padding: 10px;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  text-align: center;
-  cursor: pointer;
-  font-size: 1.2em;
-  border-radius: 4px;
-  user-select: none;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.key:focus, .key:hover {
-  background-color: #1e88e5; /* Vibrant blue */
-  color: #ffffff;
-}
-
-#minimizeButton {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  padding: 8px 12px;
-  background-color: #d32f2f;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.2s;
-}
-
-#minimizeButton:hover {
-  background-color: #b71c1c;
 }
 
 .hidden {
@@ -306,28 +266,79 @@ svg path {
 
 .cat-name {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 18px;
   margin-bottom: 10px;
 }
 
 .cat-location {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: bold;
   color: #555;
+  
 }
 
+.ridingParty {
+  font-size: 15px;
+  font-weight: bold;
+  color: #555;
+  padding-bottom: 10px;
+}
 
 #regionInfoBox {
   position: absolute;
-  bottom: 100px; /* Adjust as needed to position above zoomControls */
+  bottom: 100px; 
   left: 50%;
-  transform: translateX(-50%); /* Center align */
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+  transform: translateX(-50%); 
+  background-color: rgba(0, 0, 0, 0.8); 
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 16px;
-  display: none; /* Initially hidden */
+  display: none; 
   z-index: 1000; /* Ensure it appears on top */
   text-align: center;
+}
+
+.data-riding p{
+  color: black;
+}
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  color: black;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
