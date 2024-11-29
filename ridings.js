@@ -56296,6 +56296,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeBtn = document.getElementById("closeBtn");
   const mapContainer = document.getElementById("mapContainer");
   const map = document.getElementById("map");
+  const ridingListing = document.querySelector(".riding-listing");
+
+
 
   // Variables for touch events
   let scale = 1;
@@ -56304,6 +56307,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let isMultiTouch = false;
   let lastX = 0;
   let lastY = 0;
+  let isTouchScrolling = false;
+  let startTouchY = 0; // Initial touch Y position
+  let startScrollY = 0; // Initial scroll position of the container
 
   initHandlePathClick();
   initMouseControls();
@@ -56381,6 +56387,34 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 50);
     }
   });
+
+  ridingListing.addEventListener("touchstart", (event) => {
+    if (event.touches.length === 1) {
+      isTouchScrolling = true;
+      startTouchY = event.touches[0].clientY; // Store the initial Y position
+      startScrollY = ridingListing.scrollTop; // Store the initial scroll position
+    }
+  });
+  
+  // Handle touch move
+  ridingListing.addEventListener("touchmove", (event) => {
+    if (isTouchScrolling && event.touches.length === 1) {
+      const currentTouchY = event.touches[0].clientY; // Current Y position
+      const deltaY = startTouchY - currentTouchY; // Calculate the vertical movement
+  
+      // Update the scroll position of the container
+      ridingListing.scrollTop = startScrollY + deltaY;
+  
+      // Prevent default behavior to avoid page scrolling
+      event.preventDefault();
+    }
+  });
+  
+  // Handle touch end
+  ridingListing.addEventListener("touchend", () => {
+    isTouchScrolling = false; // Reset touch scrolling flag
+  });
+
 });
 
 svgData = parseCSV(postalCode);
