@@ -6,7 +6,7 @@
     <title>New Brunswick District Map</title>
     <link href="ridings.css" rel="stylesheet" />
   </head>
-  <body onmousedown="return false" onselectstart="return false">
+  <body>
 
     <!-- The Modal -->
     <div id="myModal" class="modal">
@@ -27,7 +27,7 @@
           <div class="arrow"></div>
         </div>
       </div>
-      <div id="regionInfoBox"></div>
+      <div class="no-select" id="regionInfoBox"></div>
       <div id="zoomControls">
         <button id="resetZoomBtn">
           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-aspect-ratio" viewBox="0 0 16 16">
@@ -332,7 +332,7 @@
 <!--          <div id="resultDisplay"></div> -->
         </div>
       
-        <div class="riding-listing" id="riding-listing">
+        <div class="no-select riding-listing" id="riding-listing">
           <p id="scrollToTop">Scroll through to see all the ridings in New Brunswick!</p>
           <!-- Images will load here dynamically -->
         </div>

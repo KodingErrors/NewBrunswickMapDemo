@@ -342,3 +342,10 @@ svg path {
   text-decoration: none;
   cursor: pointer;
 }
+
+.no-select {
+  user-select: none; /* Prevents text selection */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Older Firefox */
+  -ms-user-select: none; /* IE10+ */
+}
