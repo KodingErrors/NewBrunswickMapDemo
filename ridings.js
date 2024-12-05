@@ -56429,6 +56429,7 @@ async function searchPostalCode() {
   if (pedValue !== null && scrollImageIntoView(pedValue)) {
     handleSearchResult(pedValue);
     handlePathCentering(pedValue);
+    showRegionInfo(pedValue);
   } 
 }
 
@@ -56450,6 +56451,7 @@ function initHandlePathClick() {
       console.log(`Path with PED "${pedValue}" clicked!`);
       handleSearchResult(pedValue);
       handlePathCentering(pedValue);
+      
     });
   });
 }
@@ -56487,14 +56489,15 @@ function initHandleAddImages() {
       const imageNumber = img.src.match(/(\d+)\.jpg$/)[1];
       handleSearchResult(imageNumber);
       handlePathCentering(imageNumber);
+      showRegionInfo(imageNumber);
     });
 
     // Create text container
     const infoContainer = document.createElement("div");
-    infoContainer.className = "cat-info";
+    infoContainer.className = "ridingInfo";
 
     const ridingName = document.createElement("div");
-    ridingName.className = "cat-name";
+    ridingName.className = "ridingName";
     ridingName.textContent = nameMap[i];
 
     const ridingParty = document.createElement("div");
@@ -56511,7 +56514,7 @@ function initHandleAddImages() {
     }
 
     const ridingLocation = document.createElement("div");
-    ridingLocation.className = "cat-location";
+    ridingLocation.className = "location";
     ridingLocation.textContent = "➢    " + regionMap[i] || "Unknown";
 
     // Append name and location to info container
@@ -56568,6 +56571,7 @@ function resetScale() {
   });
 
   selectedDataRidingNum?.classList.remove("highlightImg");
+  regionInfoBox.style.display = "none";
 }
 
 // Function to update the scale and apply it without losing the pan state

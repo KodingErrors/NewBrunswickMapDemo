@@ -259,18 +259,18 @@ svg path {
   margin-right: 50px;
 }
 
-.cat-info {
+.ridingInfo {
   display: flex;
   flex-direction: column;
 }
 
-.cat-name {
+.ridingName {
   font-weight: bold;
   font-size: 18px;
   margin-bottom: 10px;
 }
 
-.cat-location {
+.location {
   font-size: 15px;
   font-weight: bold;
   color: #555;
