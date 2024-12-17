@@ -1,3 +1,6 @@
+## Welcome to the New Brunswick Map Demo
+### Find yourself
+
 #### File structure
 * /images
 * index.html
