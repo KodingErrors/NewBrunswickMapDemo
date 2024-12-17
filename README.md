@@ -1,4 +1,4 @@
-## Welcome to the New Brunswick Map Demo
+## Welcome to the New Brunswick Map Demo!
 ### Find who represents you in the part of the province that you live in!
 
 #### File structure
